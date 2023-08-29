@@ -9,7 +9,7 @@ maintaining high accuracy on a corresponding testing dataset.
 Extending the testing data with these synthesised images allows a better understanding of how a classifier will perform 
 on data that is outside the training distribution, thus permitting better judgement on any future actions.
 ## Method
-Let $`M \in (\mathbb{N} \ cap [0,255])^{28 \times 28}`$ be a MNIST image, and let 
+Let $`M \in (\mathbb{N} \cap [0,255])^{28 \times 28}`$ be a MNIST image, and let 
 $`C \in (\mathbb{N} \cap [0,255])^{32 \times 32 \times 3}`$ be CIFAR-10 image.
 
 Note that for our purposes, we resize $`M`$ so that its dimensions match those of $`C`$. This is done through `torchvision.transforms.Resize`
