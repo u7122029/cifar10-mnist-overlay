@@ -19,6 +19,7 @@ class CustomMNIST(Dataset):
         self.transform = transform
         self.data = np.load(self.data_path)
         self.labels = np.load(self.label_path)
+        print(self.data.shape)
 
     def __len__(self):
         return len(self.labels)
@@ -45,13 +46,13 @@ class ToNumpyRGB:
         return np.tile(sample,(3,1,1)).transpose(1,2,0)
 
 
-def main():
+def inverse_overlay():
     num_datasets = 1000
 
     upsize = Compose([Resize((32, 32)), ToNumpyRGB()])
     out_dir = Path("data") / "cifar10_overlayed"
-    #dset_mnist = CustomMNIST(f"data/mnist-i/{i}/data.npy", f"data/mnist-i/{i}/labels.npy")
-    dset_mnist = MNIST("/ml_datasets", train=False, transform=upsize)
+    dset_mnist = CustomMNIST(f"data/mnist-i/{i}/data.npy", f"data/mnist-i/{i}/labels.npy")
+    #dset_mnist = MNIST("/ml_datasets", train=False, transform=upsize)
     dset_cifar10 = CIFAR10("/ml_datasets", train=False)
 
     for dset_idx in tqdm(range(num_datasets)):
@@ -78,5 +79,40 @@ def main():
         np.save(str(out_dir / out_dset_root / "labels.npy"), np.array(out_labels, dtype=np.uint8))
 
 
+def superimpose(data_dir: Path, idx):
+    # Place digit right on top of cifar10 image. Digit is of randomised colour.
+    # Intensity of mnist pixel determines how close that pixel will be to the randomised colour.
+    num_datasets = 1000
+
+    upsize = Compose([ToPILImage(), Resize((32, 32)), ToNumpyRGB()])
+    out_dir = Path("data") / "cifar10_superimposed"
+    dset_mnist = CustomMNIST(str(data_dir / "data.npy"), str(data_dir / "labels.npy"))
+    #dset_mnist = MNIST("/ml_datasets", train=False, transform=upsize)
+    dset_cifar10 = CIFAR10("/ml_datasets", train=False)
+
+    for dset_idx in tqdm(range(num_datasets)):
+        out_data = []
+        out_labels = []
+        for img_idx in range(len(dset_mnist)):
+            cifar_img_idx = torch.randint(low=0, high=len(dset_cifar10), size=(1,))[0].item()  # Pick random cifar10 image.
+            cifar_img, cifar_label = dset_cifar10[cifar_img_idx]
+            cifar_img = np.array(cifar_img)
+            mnist_img, mnist_label = dset_mnist[img_idx]
+            mnist_img = np.array(mnist_img) / 255
+            solid_colour = np.ones((32,32,3)) * np.random.randint(0,256,3)
+
+            result = np.array(np.round(mnist_img * solid_colour + (1 - mnist_img) * cifar_img),dtype=np.uint8)
+            out_data.append(np.array(result, dtype=np.uint8))
+            out_labels.append(mnist_label)
+
+        # save data (shape (10000,32,32,3))
+        out_dset_root = Path(str(dset_idx).zfill(3))
+        (out_dir / str(idx) / out_dset_root).mkdir(parents=True, exist_ok=True)
+        out_full = np.array(out_data, dtype=np.uint8)
+        assert out_full.shape == (10000,32,32,3)
+        np.save(str(out_dir / str(idx) / out_dset_root / "data.npy"), out_full)
+        np.save(str(out_dir / str(idx) / out_dset_root / "labels.npy"), np.array(out_labels, dtype=np.uint8))
+
+
 if __name__ == "__main__":
-    main()
+    pass
