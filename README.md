@@ -32,5 +32,6 @@ limits will give a pixel that is between the original and its RGB inverse, and w
 $`M'_{i,j}/255`$.
 
 ### CIFAR-10 Background, Random Colour Pixels
-
+TODO
 ### Random Coloured Background, Random Coloured Digit
+TODO
