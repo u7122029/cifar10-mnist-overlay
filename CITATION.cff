@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you're unsure how to cite this work, you may cite it as follows:"
+authors:
+- family-names: "Koh"
+  given-names: "Callum"
+title: "CIFAR-10 MNIST Overlay"
+version: 1.0
+date-released: 2023-10-06
+url: "https://github.com/u7122029/cifar10-mnist-overlay"
