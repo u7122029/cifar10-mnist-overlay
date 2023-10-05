@@ -8,7 +8,8 @@ maintaining high accuracy on a corresponding testing dataset.
 
 Extending the testing data with these synthesised images allows a better understanding of how a classifier will perform 
 on data that is outside the training distribution, thus permitting better judgement on any future actions.
-## Method
+## Methods
+### CIFAR-10 Background, Inverse Pixels
 Let $`M \in (\mathbb{N} \cap [0,255])^{28 \times 28}`$ be a MNIST image, and let 
 $`C \in (\mathbb{N} \cap [0,255])^{32 \times 32 \times 3}`$ be CIFAR-10 image.
 
@@ -29,3 +30,7 @@ Here we are imagining $`C_{i,j}`$ and its RGB inverse $`255 - C_{i,j}`$ as vecto
 If $`t = 0`$, then the resulting pixel is $`C_{i,j}`$, and if $`t = 1`$, then it is $`255 - C_{i,j}`$. Choosing $`t`$ in between these
 limits will give a pixel that is between the original and its RGB inverse, and we decide this choice of $`t`$ through the value of 
 $`M'_{i,j}/255`$.
+
+### CIFAR-10 Background, Random Colour Pixels
+
+### Random Coloured Background, Random Coloured Digit
